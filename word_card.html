@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>TOEFL 词汇听写闪卡</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef1f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+    .card {
+      background: white;
+      width: 400px;
+      min-height: 240px;
+      margin: 20px auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+    }
+    #meaning {
+      display: none;
+      font-size: 24px;
+      color: #333;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    #countdown {
+      font-size: 20px;
+      color: #e53e3e;
+      margin-bottom: 10px;
+    }
+    #progress {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #startBtn {
+      background-color: #3182ce;
+      color: white;
+    }
+    #nextBtn {
+      background-color: #38a169;
+      color: white;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card" id="card">
+    <div id="meaning"></div>
+    <div id="countdown"></div>
+    <div id="progress"></div>
+    <button id="startBtn">开始</button>
+    <button id="nextBtn">下一个</button>
+    <audio id="audio"></audio>
+  </div>
+
+  <script>
+    const vocabulary = [
+      { english: "baroque", chinese: "巴洛克式的（豪华繁复的）" },
+      { english: "span",    chinese: "跨度；持续时间" },
+      { english: "tend",    chinese: "倾向；照料" },
+      { english: "imbue",   chinese: "使感染，使渗透" },
+      { english: "depict",  chinese: "描绘；描述" }
+    ];
+
+    const totalWords = vocabulary.length;
+    let learnedCount = 0;
+    let needReview = false;
+    let revealTimer = null;
+    let countdownInterval = null;
+    let currentIndex = 0;
+
+    const startBtn    = document.getElementById('startBtn');
+    const nextBtn     = document.getElementById('nextBtn');
+    const meaningDiv  = document.getElementById('meaning');
+    const countdownDiv= document.getElementById('countdown');
+    const progressDiv = document.getElementById('progress');
+    const audio       = document.getElementById('audio');
+
+    function updateProgress() {
+      progressDiv.innerText =
+        `总 ${totalWords}，当前 ${currentIndex+1}，已掌握 ${learnedCount}`;
+    }
+
+    function showNextWord() {
+      clearTimeout(revealTimer);
+      clearInterval(countdownInterval);
+      meaningDiv.style.display = 'none';
+      countdownDiv.innerText = '';
+      needReview = false;
+
+      // 全部完成
+      if (vocabulary.length === 0) {
+        document.getElementById('card').innerHTML =
+          `<h2>🎉 恭喜你掌握了所有单词！</h2>
+           <p>总共 ${totalWords} 个单词已全部掌握！</p>`;
+        return;
+      }
+
+      currentIndex = 0;
+      updateProgress();
+
+      const word = vocabulary[currentIndex];
+      audio.src = `https://dict.youdao.com/dictvoice?audio=${word.english}&type=2`;
+      audio.play();
+
+      // 语音播放完毕后开始 1.5s 倒计时
+      audio.onended = () => {
+        let remaining = 1500;
+        countdownDiv.innerText = `倒计时: ${(remaining/1000).toFixed(1)}s`;
+        countdownInterval = setInterval(() => {
+          remaining -= 100;
+          if (remaining <= 0) {
+            clearInterval(countdownInterval);
+          }
+          countdownDiv.innerText = `倒计时: ${(remaining/1000).toFixed(1)}s`;
+        }, 100);
+
+        revealTimer = setTimeout(() => {
+          meaningDiv.innerText = `${word.english}：${word.chinese}`;
+          meaningDiv.style.display = 'block';
+          countdownDiv.innerText = '';
+          needReview = true;
+        }, 1500);
+      };
+    }
+
+    startBtn.onclick = () => {
+      startBtn.style.display = 'none';
+      nextBtn.style.display  = 'inline-block';
+      updateProgress();
+      showNextWord();
+    };
+
+    nextBtn.onclick = () => {
+      clearTimeout(revealTimer);
+      clearInterval(countdownInterval);
+      countdownDiv.innerText = '';
+
+      const [item] = vocabulary.splice(currentIndex, 1);
+      if (needReview) {
+        vocabulary.push(item);
+      } else {
+        learnedCount++;
+      }
+
+      showNextWord();
+    };
+  </script>
+
+</body>
+</html>

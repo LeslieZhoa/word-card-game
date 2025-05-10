@@ -1,86 +1,53 @@
-# Word Card Game
+# Word Pronunciation Recognition Game
 
-This is a word card learning project developed using Cursor, an AI-powered IDE. The entire project was created and developed using Cursor.
+## Project Introduction
 
-A simple and effective web application for learning English vocabulary. This application helps you memorize words through interactive flashcards with pronunciation support.
+This is a web-based word pronunciation recognition game developed with the assistance of GPT-O4-Mini-High. The game aims to help users recognize and memorize words by listening to their pronunciations, particularly suitable for English learners.
 
 ## Features
 
-- Interactive word cards
-- Chinese translations
-- Text-to-speech pronunciation
-- Progress tracking
-- Random word selection
-- Mastery marking system
+- **Word Recognition by Sound**: Plays word pronunciations for users to recall
+- **Timed Challenge**: Users have 1.5 seconds to recognize each word
+- **Progress Tracking**: Displays mastered words count and overall progress
+- **Smart Review**: Words not recognized in time are added back to the learning queue
+- **Customizable Vocabulary**: Users can modify the word list according to their needs
 
-## Prerequisites
+## How to Use
 
-- Node.js (v14 or higher)
-- npm (comes with Node.js)
+1. Open the `word_card.html` file in a browser
+2. Click the "Start" button to begin
+3. Listen to the word pronunciation and try to recall the word within 1.5 seconds
+4. If you can recall the word, wait for the word and translation to display, then click "Next"
+5. If you cannot recall, the system will automatically display the word and translation, and the word will be added back to the learning queue
+6. Continue learning until you master all words
 
-## Installation
+## Game Interface
 
-1. Clone the repository or download the source code
-2. Navigate to the project directory:
-   ```bash
-   cd word-card-game
-   ```
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
+### Start Screen
+![Start Screen](assets/begin.png)
 
-## Running the Application
+### Game Running
+![Game Running](assets/run.png)
 
-You can run the application in two ways:
+## Customize Vocabulary
 
-1. Using the run script:
-   ```bash
-   ./run.sh
-   ```
+You can customize the vocabulary by modifying the vocabulary array in the `word_card.html` file:
 
-2. Or manually:
-   ```bash
-   cd word-card-game
-   npm start
-   ```
-
-The application will automatically open in your default web browser at http://localhost:3000 (or http://localhost:3001 if port 3000 is occupied).
-
-## Usage
-
-1. View the English word on the card
-2. Click the speaker icon to hear the pronunciation
-3. Click "Show Translation" to see the Chinese meaning
-4. Mark the word as "Mastered" if you know it
-5. Mark as "Not Mastered" if you need more practice
-6. Track your progress with the progress bar
-7. When all words are mastered, you can restart the learning process
-
-## Customizing Word List
-
-To modify the word list, edit the file `src/data/words.ts`. Each word entry has three properties:
-- `english`: The English word
-- `chinese`: The Chinese translation
-- `mastered`: Learning status (false by default)
-
-Example of adding a new word:
-```typescript
-{ english: "new word", chinese: "新单词", mastered: false }
+```javascript
+const vocabulary = [
+  { english: "baroque", chinese: "巴洛克式的（豪华繁复的）" },
+  { english: "span",    chinese: "跨度；持续时间" },
+  { english: "tend",    chinese: "倾向；照料" },
+  { english: "imbue",   chinese: "使感染，使渗透" },
+  { english: "depict",  chinese: "描绘；描述" }
+  // Add more words...
+];
 ```
 
-## Stopping the Application
+You can also use GPT-O4-Mini to generate more words and translations by providing the type or topic of words you want to learn.
 
-To stop the application, press `Ctrl+C` in the terminal.
+## Technical Implementation
 
-## Development
-
-This project is built with:
-- React
-- TypeScript
-- Material-UI
-- Web Speech API for pronunciation
-
-## License
-
-MIT License
+- Pure HTML/CSS/JavaScript implementation, no additional dependencies required
+- Uses Youdao Dictionary API for word pronunciations
+- Responsive design, adapts to different device screens
